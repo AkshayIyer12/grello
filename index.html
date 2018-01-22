@@ -11,30 +11,45 @@
       width: 12%;
       height: 100%;
     }
+    .boardLists {
+      display: flex;
+      flex-direction: row;
+    }
   </style>
 </head>
 <body>
   <div id="app">
-    <board :text="boardText">
-    </board>
+    <button @click="incrementCounter">+</button>
+    <div class="boardLists">
+        <board v-for="(res, index) in list" :text="res" :key="index"></board> 
+    </div>
+   
   </div>
   <script>
     let Board = {
       props: ['text'],
       template: `
       <div class="board">
-        <p v-text="text"></p>
-      </div>`
+      <p v-text="text"></p>
+      </div>
+      `
     }
     new Vue({
       el: '#app',
       data () {
         return {
-          boardText: 'Hello world I am board child'
+          counter: 0,
+          list: [],
         }
       },
       components: {
         'board': Board
+      },
+      methods: {
+        incrementCounter () {
+          this.counter++
+          this.list.push(`What's the board for?`)
+        }
       }
     })
   </script>
