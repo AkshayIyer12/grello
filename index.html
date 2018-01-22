@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Welcome to Vue</title>
+  <script src="https://unpkg.com/vue"></script>
+  <style>
+    .board {
+      padding: 10px 20px;
+      border: solid 2px;
+      margin: 20px;
+      width: 12%;
+      height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <board :text="boardText">
+    </board>
+  </div>
+  <script>
+    let Board = {
+      props: ['text'],
+      template: `
+      <div class="board">
+        <p v-text="text"></p>
+      </div>`
+    }
+    new Vue({
+      el: '#app',
+      data () {
+        return {
+          boardText: 'Hello world I am board child'
+        }
+      },
+      components: {
+        'board': Board
+      }
+    })
+  </script>
+</body>
+</html>
