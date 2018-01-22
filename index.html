@@ -19,18 +19,28 @@
 </head>
 <body>
   <div id="app">
-    <button @click="incrementCounter">+</button>
+    <button @click="addNewBoard">+</button>
     <div class="boardLists">
-        <board v-for="(res, index) in list" :text="res" :key="index"></board> 
+      <board v-for="(res, index) in list" :text="res" :ind="index" :addnewcard="addNewCard"  :key="index">
+      </board> 
     </div>
-   
   </div>
   <script>
     let Board = {
-      props: ['text'],
+      props: ['text', 'ind', 'addnewcard'],
       template: `
       <div class="board">
-      <p v-text="text"></p>
+        <p v-text="text.boardTitle"></p>
+        <button @click="addnewcard(ind)">+</button>
+        <pchild v-for="(val, index) in text.cards" :val="val" :key="index"></pchild>
+      </div>
+      `
+    }
+    let Child = {
+      props: ['val'],
+      template: `
+      <div class="card">
+        <p v-text="val"></p>
       </div>
       `
     }
@@ -38,17 +48,22 @@
       el: '#app',
       data () {
         return {
-          counter: 0,
           list: [],
         }
       },
       components: {
-        'board': Board
+        'board': Board,
+        'pchild': Child
       },
       methods: {
-        incrementCounter () {
-          this.counter++
-          this.list.push(`What's the board for?`)
+        addNewBoard () {
+          this.list.push({
+            boardTitle: `What's the board for?`,
+            cards: []
+          })
+        },
+        addNewCard (index) {
+          this.list[index].cards.push(`What's the card for?`)
         }
       }
     })
