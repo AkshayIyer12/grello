@@ -4,14 +4,14 @@
   <title>Welcome to Vue</title>
   <script src="https://unpkg.com/vue"></script>
   <style>
-    .board {
+    .insideList {
       padding: 10px 20px;
       border: solid 2px;
       margin: 20px;
       width: 12%;
       height: 100%;
     }
-    .boardLists {
+    .allLists {
       display: flex;
       flex-direction: row;
     }
@@ -20,13 +20,13 @@
 <body>
   <div id="app">
     <button @click="addNewBoard">+</button>
-    <div class="boardLists">
-      <board v-for="(res, index) in list" :text="res" :ind="index" :key="index">
-      </board> 
+    <div class="allLists">
+      <list v-for="(res, index) in listData" :text="res" :ind="index" :key="index">
+      </list> 
     </div>
   </div>
   <script>
-    let Child = {
+    let Card = {
           props: ['val'],
           template: `
           <div class="card">
@@ -34,21 +34,21 @@
           </div>
           `
         }
-    let Board = {
+    let List = {
       props: ['text', 'ind'],
       template: `
-      <div class="board">
-        <p v-text="text.boardTitle"></p>
+      <div class="insideList">
+        <p v-text="text.listTitle"></p>
         <button @click="addNewCard(ind, text)">+</button>
         <card v-for="(val, index) in text.cards" :val="val" :key="index"></card>
       </div>
       `,
       components: {
-        'card': Child  
+        'card': Card  
       },
       methods: {
-        addNewCard (index, list) {
-          list.cards.push(`What's the card for?`)
+        addNewCard (index, listData) {
+          listData.cards.push(`What's the card for?`)
         }
       }
     }
@@ -57,16 +57,16 @@
       el: '#app',
       data () {
         return {
-          list: [],
+          listData: [],
         }
       },
       components: {
-        'board': Board,
+        'list': List,
       },
       methods: {
         addNewBoard () {
-          this.list.push({
-            boardTitle: `What's the board for?`,
+          this.listData.push({
+            listTitle: `What's the board for?`,
             cards: []
           })
         }
