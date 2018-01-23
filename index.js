@@ -10,7 +10,7 @@ let List = {
   props: ['list'],
   template: `
       <div class="insideList">
-       <p v-text="list.listTitle"></p>
+       <input type="text" placeholder="What is the list for?"/>
        <card v-for="(val, index) in list.cards" :val="val.cardTitle" :key="index"></card>
        <button @click="addNewCard(list.cards)">+</button>
       </div>
@@ -28,7 +28,10 @@ let List = {
   }
 }
 const storage = {
-  fetch: () => JSON.parse(localStorage.getItem('lists') || '[]')
+  fetch: () => JSON.parse(localStorage.getItem('lists') || '[]'),
+  save: function (listData) {
+    localStorage.setItem('lists', JSON.stringify(listData))
+  }
 }
 
 new Vue({
@@ -52,7 +55,7 @@ new Vue({
   watch: {
     listData: {
       handler () {
-        localStorage.setItem('lists', JSON.stringify(this.listData))
+        storage.save(this.listData)
       },
       deep: true
     }
