@@ -21,29 +21,38 @@
   <div id="app">
     <button @click="addNewBoard">+</button>
     <div class="boardLists">
-      <board v-for="(res, index) in list" :text="res" :ind="index" :addnewcard="addNewCard"  :key="index">
+      <board v-for="(res, index) in list" :text="res" :ind="index" :key="index">
       </board> 
     </div>
   </div>
   <script>
+    let Child = {
+          props: ['val'],
+          template: `
+          <div class="card">
+            <p v-text="val"></p>
+          </div>
+          `
+        }
     let Board = {
-      props: ['text', 'ind', 'addnewcard'],
+      props: ['text', 'ind'],
       template: `
       <div class="board">
         <p v-text="text.boardTitle"></p>
-        <button @click="addnewcard(ind)">+</button>
-        <pchild v-for="(val, index) in text.cards" :val="val" :key="index"></pchild>
+        <button @click="addNewCard(ind, text)">+</button>
+        <card v-for="(val, index) in text.cards" :val="val" :key="index"></card>
       </div>
-      `
+      `,
+      components: {
+        'card': Child  
+      },
+      methods: {
+        addNewCard (index, list) {
+          list.cards.push(`What's the card for?`)
+        }
+      }
     }
-    let Child = {
-      props: ['val'],
-      template: `
-      <div class="card">
-        <p v-text="val"></p>
-      </div>
-      `
-    }
+    
     new Vue({
       el: '#app',
       data () {
@@ -53,7 +62,6 @@
       },
       components: {
         'board': Board,
-        'pchild': Child
       },
       methods: {
         addNewBoard () {
@@ -61,9 +69,6 @@
             boardTitle: `What's the board for?`,
             cards: []
           })
-        },
-        addNewCard (index) {
-          this.list[index].cards.push(`What's the card for?`)
         }
       }
     })
