@@ -4,9 +4,6 @@
   <title>Welcome to Vue</title>
   <script src="https://unpkg.com/vue"></script>
   <style>
-    #app {
-
-    }
     .insideList {
       padding: 10px 20px;
       border: solid 2px;
@@ -33,7 +30,7 @@
 <body>
   <div id="app">
     <div class="allLists">
-      <list class="children" v-for="(res, index) in listData" :text="res" :key="index">
+      <list class="children" v-for="(res, index) in listData" :list="res" :key="index">
       </list>
       <button id="listbutton" @click="addNewList">+</button> 
     </div>

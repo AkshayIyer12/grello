@@ -20,7 +20,6 @@ let List = {
   },
   methods: {
     addNewCard (cards) {
-      
       cards.push(`What's the card for?`)
     }
   }
