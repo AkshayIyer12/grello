@@ -7,20 +7,21 @@ let Card = {
           `
 }
 let List = {
-  props: ['text', 'ind'],
+  props: ['list'],
   template: `
       <div class="insideList">
-       <p v-text="text.listTitle"></p>
-       <card v-for="(val, index) in text.cards" :val="val" :key="index"></card>
-       <button @click="addNewCard(ind, text)">+</button>
+       <p v-text="list.listTitle"></p>
+       <card v-for="(val, index) in list.cards" :val="val" :key="index"></card>
+       <button @click="addNewCard(list.cards)">+</button>
       </div>
       `,
   components: {
     'card': Card
   },
   methods: {
-    addNewCard (index, listData) {
-      listData.cards.push(`What's the card for?`)
+    addNewCard (cards) {
+      
+      cards.push(`What's the card for?`)
     }
   }
 }
@@ -36,11 +37,19 @@ new Vue({
     'list': List
   },
   methods: {
-    addNewBoard () {
+    addNewList () {
       this.listData.push({
         listTitle: `What's the list for?`,
         cards: []
       })
+    }
+  },
+  watch: {
+    listData: {
+      handler () {
+        localStorage.setItem('lists', JSON.stringify(this.listData))
+      },
+      deep: true
     }
   }
 })
