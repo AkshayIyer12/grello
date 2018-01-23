@@ -11,7 +11,7 @@ let List = {
   template: `
       <div class="insideList">
        <p v-text="list.listTitle"></p>
-       <card v-for="(val, index) in list.cards" :val="val" :key="index"></card>
+       <card v-for="(val, index) in list.cards" :val="val.cardTitle" :key="index"></card>
        <button @click="addNewCard(list.cards)">+</button>
       </div>
       `,
@@ -20,16 +20,22 @@ let List = {
   },
   methods: {
     addNewCard (cards) {
-      cards.push(`What's the card for?`)
+      cards.push({
+        cardTitle: `What is the card for?`,
+        description: 'Empty for now'
+      })
     }
   }
+}
+const storage = {
+  fetch: () => JSON.parse(localStorage.getItem('lists') || '[]')
 }
 
 new Vue({
   el: '#app',
   data () {
     return {
-      listData: []
+      listData: storage.fetch()
     }
   },
   components: {
