@@ -1,49 +1,43 @@
+
 let Card = {
   props: ['val'],
   data () {
     return {
-      data: {
-        cardCheck: null
-      }
+      data: null
     }
   },
   template: `
           <div class="card">
             <input type="text" v-if="data.cardCheck === null" placeholder="What is the list for?" 
              v-model="data.cardTitle" @keyup.enter="changeCardCheck"/>
-
-            <p v-if="data.cardCheck === true" v-text="data.cardTitle" @click="changeCardCheck"></p>
+            <p v-if="data.cardCheck === true && data.cardTitle !== ''" v-text="data.cardTitle" @click="changeCardCheck"></p>
           </div>`,
   methods: {
     changeCardCheck () {
-      if (this.val.cardCheck) {
+      if (this.data.cardCheck) {
         this.data.cardCheck = null
       } else {
-        this.data.cardCheck = true
-        this.$emit('dataChanged', this.data)
+        if (this.data.cardTitle !== '') {
+          this.data.cardCheck = true
+          this.$emit('dataChanged', this.data)
+        }
       }
     }
   },
-  mounted () {
-    console.log('Mounted:::: ', this.val)
+  created () {
     this.data = JSON.parse(JSON.stringify(this.val))
   }
 }
 
 let List = {
   props: ['list'],
-  data () {
-    return {
-      inputCheck: null
-    }
-  },
   template: `
       <div class="insideList">
-       <input type="text" v-if="inputCheck === null" placeholder="What is the list for?" 
+       <input type="text" v-if="list.listCheck === null" placeholder="What is the list for?" 
        v-model="list.listTitle" 
        @keyup.enter="changeInputCheck"/>
 
-       <p v-if="inputCheck === true" v-text="list.listTitle" @click="changeInputCheck"></p>
+       <p v-if="list.listCheck === true" v-text="list.listTitle" @click="changeInputCheck"></p>
 
        <card v-for="(val, index) in list.cards" :val="val" :key="index" 
        @dataChanged="checkDataChanged" ></card>
@@ -57,7 +51,6 @@ let List = {
   methods: {
     addNewCard (cards) {
       let index = cards.length
-      console.log(index)
       cards.push({
         cardId: index,
         cardTitle: ``,
@@ -66,13 +59,11 @@ let List = {
       })
     },
     changeInputCheck () {
-      if (this.inputCheck) this.inputCheck = null
-      else this.inputCheck = true
+      if (this.list.listCheck) this.list.listCheck = null
+      else this.list.listCheck = true
     },
     checkDataChanged (data) {
-      console.log('Yooooo ', data, data.cardId)
       this.list.cards[data.cardId] = data
-      console.log('List it is:::: ', this.list)
     }
   }
 }
@@ -98,7 +89,8 @@ new Vue({
     addNewList () {
       this.listData.push({
         listTitle: ``,
-        cards: []
+        cards: [],
+        listCheck: null
       })
     }
   },
