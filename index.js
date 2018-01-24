@@ -10,7 +10,7 @@ let Card = {
           <div class="card">
             <input type="text" v-if="data.cardCheck === null" placeholder="What is the list for?" 
              v-model="data.cardTitle" @keyup.enter="changeCardCheck"/>
-            <p v-if="data.cardCheck === true && data.cardTitle !== ''" v-text="data.cardTitle" @click="changeCardCheck"></p>
+            <p v-if="data.cardCheck === true" v-text="data.cardTitle" @click="changeCardCheck"></p>
           </div>`,
   methods: {
     changeCardCheck () {
@@ -60,7 +60,11 @@ let List = {
     },
     changeInputCheck () {
       if (this.list.listCheck) this.list.listCheck = null
-      else this.list.listCheck = true
+      else {
+        if (this.list.listTitle !== '') {
+          this.list.listCheck = true
+        }
+      }
     },
     checkDataChanged (data) {
       this.list.cards[data.cardId] = data
