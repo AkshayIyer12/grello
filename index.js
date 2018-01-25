@@ -18,6 +18,7 @@ let Card = {
             v-text="data.cardTitle" 
             @click="changeCardCheck">
             </p>
+            <button v-if="data.cardCheck === true" @click="deleteSignal">Delete</button>
           </div>`,
   methods: {
     changeCardCheck () {
@@ -29,16 +30,26 @@ let Card = {
           this.$emit('dataChanged', this.data)
         }
       }
+    },
+    deleteSignal () {
+      this.$emit('deleteSignal', this.data)
     }
   },
   created () {
+    console.log('Created:::::::::::::: ', this.val)
     this.data = JSON.parse(JSON.stringify(this.val))
     this.checkCard = this.check
+    this.$emit('hideButtonSignal', false)
   }
 }
 
 let List = {
   props: ['list'],
+  data () {
+    return {
+      addCardCheck: true
+    }
+  },
   template: `
       <div class="insideList">
        <input type="text" placeholder="What is the list for?"
@@ -55,10 +66,13 @@ let List = {
        v-for="(val, index) in list.cards" 
        :val="val" 
        :key="index" 
-       @dataChanged="checkDataChanged">
+       @dataChanged="checkDataChanged"
+       @deleteSignal="deleteCard"
+       @hideButtonSignal="hideButton">
        </card>
 
-       <button @click="addNewCard(list.cards)">+</button>
+       <button v-if="list.listCheck === true && addCardCheck === true" 
+       @click="addNewCard(list.cards)">+</button>
       </div>
       `,
   components: {
@@ -67,12 +81,13 @@ let List = {
   methods: {
     addNewCard (cards) {
       let index = cards.length
-      cards.push({
+      let temp = {
         cardId: index,
         cardTitle: ``,
         description: 'Empty for now',
         cardCheck: null
-      })
+      }
+      cards.push(temp)
     },
     changeInputCheck () {
       if (this.list.listCheck) this.list.listCheck = null
@@ -84,6 +99,15 @@ let List = {
     },
     checkDataChanged (data) {
       this.list.cards[data.cardId] = data
+      this.addCardCheck = true
+     // this.$emit('cardUpdated', this.list)
+    },
+    deleteCard (card) {
+      this.list.cards.splice(card.cardId, 1)
+    },
+    hideButton (value) {
+      console.log('Hide button method triggered:::::')
+      this.addCardCheck = false
     }
   }
 }
