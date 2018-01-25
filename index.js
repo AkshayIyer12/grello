@@ -1,15 +1,16 @@
 
 let Card = {
-  props: ['val'],
+  props: ['val', 'check'],
   data () {
     return {
-      data: null
+      data: null,
+      checkCard: null
     }
   },
   template: `
           <div class="card">
             <input type="text" v-if="data.cardCheck === null" placeholder="What is the list for?" 
-             v-model="data.cardTitle" @keyup.enter="changeCardCheck"/>
+             v-model="data.cardTitle" @keyup.enter="changeCardCheck" @blur="emitLostFocus"/>
             <p v-if="data.cardCheck === true" v-text="data.cardTitle" @click="changeCardCheck"></p>
           </div>`,
   methods: {
@@ -22,15 +23,25 @@ let Card = {
           this.$emit('dataChanged', this.data)
         }
       }
+    },
+    emitLostFocus () {
+      this.checkCard = false
+      this.$emit('lostFocus', [this.data, this.checkCard])
     }
   },
   created () {
     this.data = JSON.parse(JSON.stringify(this.val))
+    this.checkCard = this.check
   }
 }
 
 let List = {
   props: ['list'],
+  data () {
+    return {
+      checker: true
+    }
+  },
   template: `
       <div class="insideList">
        <input type="text" v-if="list.listCheck === null" placeholder="What is the list for?" 
@@ -39,8 +50,9 @@ let List = {
 
        <p v-if="list.listCheck === true" v-text="list.listTitle" @click="changeInputCheck"></p>
 
-       <card v-for="(val, index) in list.cards" :val="val" :key="index" 
-       @dataChanged="checkDataChanged" ></card>
+       <card v-if="checker" v-for="(val, index) in list.cards" :val="val" :check="checker" 
+       :key="index" 
+       @dataChanged="checkDataChanged" @lostFocus="removeCard"></card>
 
        <button @click="addNewCard(list.cards)">+</button>
       </div>
@@ -68,6 +80,9 @@ let List = {
     },
     checkDataChanged (data) {
       this.list.cards[data.cardId] = data
+    },
+    removeCard ([data, checkCard]) {
+      this.checker = checkCard
     }
   }
 }
