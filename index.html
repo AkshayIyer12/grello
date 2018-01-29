@@ -31,7 +31,7 @@
   <div id="app">
     <div class="allLists">
       <list class="children" v-for="(res, index) in listData" 
-      :list="res" :key="index">
+      :list="res" :key="index" @updatelists="updateLists">
       </list>
       <button id="listbutton" @click="addNewList">+</button> 
     </div>
