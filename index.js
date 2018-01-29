@@ -51,24 +51,24 @@ let List = {
   },
   template: `
       <div class="insideList">
-       <input type="text" placeholder="What is the list for?"
-       v-if="list.listCheck === null"  
-       v-model="list.listTitle" 
-       @keyup.enter="changeInputCheck"/>
-       <p v-if="list.listCheck === true" 
-       v-text="list.listTitle" 
-       @click="changeInputCheck">
-       </p>
-       <card 
-       v-for="(val, index) in list.cards" 
-       :val="val" 
-       :key="index" 
-       @dataChanged="updateCardInList"
-       @deleteSignal="deleteCardInList"
-       @hideButtonSignal="hideAddButton">
-       </card>
-       <button v-if="list.listCheck === true && addCardCheck === true" 
-       @click="addCardInList">+</button>
+      <input type="text" placeholder="What is the list for?"
+      v-if="list.listCheck === null"  
+      v-model="list.listTitle" 
+      @keyup.enter="changeInputCheck"/>
+      <p v-if="list.listCheck === true" 
+      v-text="list.listTitle" 
+      @click="changeInputCheck">
+      </p>
+      <card 
+      v-for="(val, index) in list.cards" 
+      :val="val" 
+      :key="index" 
+      @dataChanged="updateCardInList"
+      @deleteSignal="deleteCardInList"
+      @hideButtonSignal="hideAddButton">
+      </card>
+      <button v-if="list.listCheck === true && addCardCheck === true" 
+      @click="addCardInList">+</button>
       </div>
       `,
   components: {
@@ -134,12 +134,13 @@ new Vue({
     addNewList () {
       console.log('Add new list called::::::::')
       let index = this.listData.length
-      this.listData.push({
+      let list = {
         listTitle: ``,
         cards: [],
         listCheck: null,
         listID: index
-      })
+      }
+      this.listData.push(list)
     },
     updateLists (list) {
       console.log('Update list got triggered::::::::::')
