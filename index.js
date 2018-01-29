@@ -19,7 +19,6 @@ let Card = {
           </div>`,
   methods: {
     showInputOrDiv () {
-      console.log('Show input or div fired:::::::: ', this.data)
       if (this.data.cardCheck) {
         this.data.cardCheck = null
       } else {
@@ -30,12 +29,10 @@ let Card = {
       }
     },
     deleteCard () {
-      console.log('Delete card fired::::::', this.data)
       this.$emit('deleteSignal', this.data)
     }
   },
   created () {
-    console.log('Created card event fired:::::::: ', this.val)
     this.data = JSON.parse(JSON.stringify(this.val))
     this.checkCard = this.check
     this.$emit('hideButtonSignal', false)
@@ -87,7 +84,6 @@ let List = {
       cards.push(temp)
     },
     changeInputCheck () {
-      console.log('Change input check fired:::::::')
       if (this.list.listCheck) this.list.listCheck = null
       else {
         if (this.list.listTitle !== '') {
@@ -96,18 +92,14 @@ let List = {
       }
     },
     updateCardInList (data) {
-      console.log('Update card data in list changed called::::::::', data)
       this.list.cards[data.cardId] = data
       this.addCardCheck = true
       this.$emit('updatelists', this.list)
     },
     deleteCardInList (card) {
-      console.log('Delete card in list called:::::::::::', card, this.list.cards)
       this.list.cards.splice(card.cardId, 1)
-      console.log('After', this.list.cards)
     },
     hideAddButton (value) {
-      console.log('Hide button method triggered:::::')
       this.addCardCheck = value
     }
   }
@@ -132,7 +124,6 @@ new Vue({
   },
   methods: {
     addNewList () {
-      console.log('Add new list called::::::::')
       let index = this.listData.length
       let list = {
         listTitle: ``,
@@ -143,16 +134,13 @@ new Vue({
       this.listData.push(list)
     },
     updateLists (list) {
-      console.log('Update list got triggered::::::::::')
       this.listData[list.listID] = list
-      console.log(this.listData)
       storage.save(this.listData)
     }
   },
   watch: {
     listData: {
       handler () {
-        console.log('Watcher in action:::::: ', this.listData)
         storage.save(this.listData)
       },
       deep: true
