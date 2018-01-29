@@ -29,7 +29,8 @@ let Card = {
       }
     },
     deleteCard () {
-      this.$emit('deleteSignal', this.data)
+      console.log('Delete card::: ', this.data)
+      this.$emit('deleteSignal')
     }
   },
   created () {
@@ -59,9 +60,10 @@ let List = {
       <card 
       v-for="(val, index) in list.cards" 
       :val="val" 
-      :key="index" 
+      :key="index"
+      v-if="val !== null" 
       @dataChanged="updateCardInList"
-      @deleteSignal="deleteCardInList"
+      @deleteSignal="deleteCardInList(index)"
       @hideButtonSignal="hideAddButton">
       </card>
       <button v-if="list.listCheck === true && addCardCheck === true" 
@@ -73,15 +75,14 @@ let List = {
   },
   methods: {
     addCardInList () {
-      let cards = this.list.cards
-      let index = cards.length
+      let index = this.list.cards.length
       let temp = {
-        cardId: index,
+        cardID: index,
         cardTitle: ``,
         description: 'Empty for now',
         cardCheck: null
       }
-      cards.push(temp)
+      this.list.cards.push(temp)
     },
     changeInputCheck () {
       if (this.list.listCheck) this.list.listCheck = null
@@ -92,18 +93,20 @@ let List = {
       }
     },
     updateCardInList (data) {
-      this.list.cards[data.cardId] = data
+      this.list.cards[data.cardID] = data
       this.addCardCheck = true
       this.$emit('updatelists', this.list)
     },
-    deleteCardInList (card) {
-      this.list.cards.splice(card.cardId, 1)
+    deleteCardInList (index) {
+      this.list.cards.splice(index, 1)
+      this.$emit('updatelists', this.list)
     },
     hideAddButton (value) {
       this.addCardCheck = value
     }
   }
 }
+
 const storage = {
   fetch: () => JSON.parse(localStorage.getItem('lists') || '[]'),
   save: function (listData) {
@@ -134,6 +137,7 @@ new Vue({
       this.listData.push(list)
     },
     updateLists (list) {
+      console.log('Update list triggered::: ', list)
       this.listData[list.listID] = list
       storage.save(this.listData)
     }
@@ -141,6 +145,7 @@ new Vue({
   watch: {
     listData: {
       handler () {
+        console.log('Watcher triggered:::')
         storage.save(this.listData)
       },
       deep: true
