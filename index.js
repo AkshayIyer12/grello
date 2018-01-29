@@ -7,12 +7,10 @@ let Card = {
   },
   template: `
           <div class="card">
-            
             <input type="text" placeholder="What is the list for?" 
             v-if="data.cardCheck === null"  
             v-model="data.cardTitle" 
             @keyup.enter="showInputOrDiv"/>
-            
             <p v-if="data.cardCheck === true" 
             v-text="data.cardTitle" 
             @click="showInputOrDiv">
@@ -21,7 +19,7 @@ let Card = {
           </div>`,
   methods: {
     showInputOrDiv () {
-      console.log('Change card check event fired:::::::: ', this.data)
+      console.log('Show input or div fired:::::::: ', this.data)
       if (this.data.cardCheck) {
         this.data.cardCheck = null
       } else {
@@ -32,12 +30,12 @@ let Card = {
       }
     },
     deleteCard () {
-      console.log('Delete card event fired::::::', this.data)
+      console.log('Delete card fired::::::', this.data)
       this.$emit('deleteSignal', this.data)
     }
   },
   created () {
-    console.log('Create card event fired:::::::: ', this.val)
+    console.log('Created card event fired:::::::: ', this.val)
     this.data = JSON.parse(JSON.stringify(this.val))
     this.checkCard = this.check
     this.$emit('hideButtonSignal', false)
@@ -57,30 +55,27 @@ let List = {
        v-if="list.listCheck === null"  
        v-model="list.listTitle" 
        @keyup.enter="changeInputCheck"/>
-
        <p v-if="list.listCheck === true" 
        v-text="list.listTitle" 
        @click="changeInputCheck">
        </p>
-
        <card 
        v-for="(val, index) in list.cards" 
        :val="val" 
        :key="index" 
-       @dataChanged="updateList"
-       @deleteSignal="deleteCard"
-       @hideButtonSignal="hideButton">
+       @dataChanged="updateCardInList"
+       @deleteSignal="deleteCardInList"
+       @hideButtonSignal="hideAddButton">
        </card>
-
        <button v-if="list.listCheck === true && addCardCheck === true" 
-       @click="addNewCard">+</button>
+       @click="addCardInList">+</button>
       </div>
       `,
   components: {
     'card': Card
   },
   methods: {
-    addNewCard () {
+    addCardInList () {
       let cards = this.list.cards
       let index = cards.length
       let temp = {
@@ -92,6 +87,7 @@ let List = {
       cards.push(temp)
     },
     changeInputCheck () {
+      console.log('Change input check fired:::::::')
       if (this.list.listCheck) this.list.listCheck = null
       else {
         if (this.list.listTitle !== '') {
@@ -99,16 +95,18 @@ let List = {
         }
       }
     },
-    updateList (data) {
-      console.log('Check data changed called', data)
+    updateCardInList (data) {
+      console.log('Update card data in list changed called::::::::', data)
       this.list.cards[data.cardId] = data
       this.addCardCheck = true
       this.$emit('updatelists', this.list)
     },
-    deleteCard (card) {
+    deleteCardInList (card) {
+      console.log('Delete card in list called:::::::::::', card, this.list.cards)
       this.list.cards.splice(card.cardId, 1)
+      console.log('After', this.list.cards)
     },
-    hideButton (value) {
+    hideAddButton (value) {
       console.log('Hide button method triggered:::::')
       this.addCardCheck = value
     }
@@ -134,6 +132,7 @@ new Vue({
   },
   methods: {
     addNewList () {
+      console.log('Add new list called::::::::')
       let index = this.listData.length
       this.listData.push({
         listTitle: ``,
@@ -143,7 +142,7 @@ new Vue({
       })
     },
     updateLists (list) {
-      console.log('Yo I got triggered')
+      console.log('Update list got triggered::::::::::')
       this.listData[list.listID] = list
       console.log(this.listData)
       storage.save(this.listData)
