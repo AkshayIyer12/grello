@@ -3,6 +3,7 @@
 <head>
   <title>Welcome to Vue</title>
   <script src="https://unpkg.com/vue"></script>
+  <script src="http://wzrd.in/standalone/uuid%2Fv4@latest"></script>
   <style>
     .insideList {
       padding: 10px 20px;
@@ -31,9 +32,11 @@
   <div id="app">
     <div class="allLists">
       <list class="children" v-for="(value, key) in listData" 
-      :list="value" 
-      :key="key" 
-      @updatelists="updateLists">
+      :listvalue="value"
+      :listindex="key"
+      :key="key"
+      @updatelistcards="updateListCards"
+      @updatelist="updateList">
       </list>
       <button id="listbutton" @click="addNewList">+</button>
     </div>
