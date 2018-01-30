@@ -31,7 +31,7 @@ let Card = {
     },
     deleteCard () {
       console.log('Delete card::: ', this.data)
-      this.$emit('deleteSignal')
+      this.$emit('deleteSignal', this.data)
     }
   },
   created () {
@@ -42,9 +42,10 @@ let Card = {
 }
 
 let List = {
-  props: ['list'],
+  props: ['listvalue', 'listindex'],
   data () {
     return {
+      list: null,
       addCardCheck: true
     }
   },
@@ -62,10 +63,10 @@ let List = {
       v-for="(val, index) in list.cards" 
       :val="val"
       :index="index"
-      :key="index"
+      :key="val.cardID"
       v-if="val !== null" 
       @dataChanged="updateCardInList"
-      @deleteSignal="deleteCardInList(index)"
+      @deleteSignal="deleteCardInList"
       @hideButtonSignal="hideAddButton">
       </card>
       <button v-if="list.listCheck === true && addCardCheck === true" 
@@ -77,33 +78,49 @@ let List = {
   },
   methods: {
     addCardInList () {
+      let num = uuidv4()
       let temp = {
+        cardID: num,
         cardTitle: ``,
         description: 'Empty for now',
         cardCheck: null
       }
+      console.log('Card created::: ', temp)
       this.list.cards.push(temp)
+      this.$emit('updatelistcards', [this.list.cards, this.listindex])
     },
     changeInputCheck () {
       if (this.list.listCheck) this.list.listCheck = null
       else {
         if (this.list.listTitle !== '') {
           this.list.listCheck = true
+          let temp = Object.assign({}, this.listvalue, this.list)
+          this.$emit('updatelist', [temp, this.listindex])
+          console.log('Change input check::::', temp, this.list, this.listvalue)
         }
       }
     },
     updateCardInList ([data, index]) {
       this.list.cards[index] = data
+      this.$emit('updatelistcards', [this.list.cards, this.listindex])
       this.addCardCheck = true
-      this.$emit('updatelists', this.list)
     },
-    deleteCardInList (index) {
-      this.list.cards.splice(index, 1)
-      this.$emit('updatelists', this.list)
+    deleteCardInList (card) {
+      console.log('Delete card:::', card)
+      this.list.cards = this.list.cards.filter(v => {
+        console.log('Inside filter', v, card)
+        if (v.cardID !== card.cardID) {
+          return v
+        }
+      })
+      this.$emit('updatelistcards', [this.list.cards, this.listindex])
     },
     hideAddButton (value) {
       this.addCardCheck = value
     }
+  },
+  created () {
+    this.list = JSON.parse(JSON.stringify(this.listvalue))
   }
 }
 
@@ -136,9 +153,14 @@ new Vue({
       }
       this.listData.push(list)
     },
-    updateLists (list) {
-      console.log('Update list triggered::: ', list)
-      this.listData[list.listID] = list
+    updateListCards ([cards, index]) {
+      console.log('UpdateListCards::: ', cards, index)
+      this.listData[index].cards = cards
+      storage.save(this.listData)
+    },
+    updateList ([list, index]) {
+      console.log('UpdateList::: ', list, index)
+      this.listData[index] = list
       storage.save(this.listData)
     }
   },
