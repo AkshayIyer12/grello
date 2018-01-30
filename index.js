@@ -16,7 +16,7 @@ let Card = {
             v-text="data.cardTitle" 
             @click="showInputOrDiv">
             </p>
-            <button v-if="data.cardCheck === true" @click="deleteCard">Delete</button>
+            <button v-if="data.cardCheck === true" @click="deleteCard">Delete Card</button>
           </div>`,
   methods: {
     showInputOrDiv () {
@@ -65,6 +65,7 @@ let List = {
       v-text="list.listTitle" 
       @click="changeInputCheck">
       </p>
+      <button @click="triggerDeleteList">Delete List</button>
       <card 
       v-for="(val, index) in list.cards" 
       :val="val"
@@ -123,6 +124,10 @@ let List = {
     },
     hideAddButton (value) {
       this.addCardCheck = value
+    },
+    triggerDeleteList () {
+      console.log('Trigger Delete List emitted::::::')
+      this.$emit('deletelist', this.list)
     }
   },
   created () {
@@ -167,6 +172,15 @@ new Vue({
     updateList ([list, index]) {
       console.log('UpdateList::: ', list, index)
       this.listData[index] = list
+      storage.save(this.listData)
+    },
+    deleteList (list) {
+      console.log('DeleteList::: ', list)
+      this.listData = this.listData.filter(v => {
+        if (v.listID !== list.listID) {
+          return v
+        }
+      })
       storage.save(this.listData)
     }
   },
