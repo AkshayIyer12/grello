@@ -1,5 +1,5 @@
 let Card = {
-  props: ['val'],
+  props: ['val', 'index'],
   data () {
     return {
       data: null
@@ -24,7 +24,7 @@ let Card = {
       } else {
         if (this.data.cardTitle !== '') {
           this.data.cardCheck = true
-          this.$emit('dataChanged', this.data)
+          this.$emit('dataChanged', [this.data, this.index])
         }
       }
     },
@@ -59,7 +59,8 @@ let List = {
       </p>
       <card 
       v-for="(val, index) in list.cards" 
-      :val="val" 
+      :val="val"
+      :index="index"
       :key="index"
       v-if="val !== null" 
       @dataChanged="updateCardInList"
@@ -75,9 +76,7 @@ let List = {
   },
   methods: {
     addCardInList () {
-      let index = this.list.cards.length
       let temp = {
-        cardID: index,
         cardTitle: ``,
         description: 'Empty for now',
         cardCheck: null
@@ -92,8 +91,8 @@ let List = {
         }
       }
     },
-    updateCardInList (data) {
-      this.list.cards[data.cardID] = data
+    updateCardInList ([data, index]) {
+      this.list.cards[index] = data
       this.addCardCheck = true
       this.$emit('updatelists', this.list)
     },
