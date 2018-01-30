@@ -34,7 +34,7 @@
       <list class="children" v-for="(value, key) in listData" 
       :listvalue="value"
       :listindex="key"
-      :key="key"
+      :key="value.listID"
       @updatelistcards="updateListCards"
       @updatelist="updateList">
       </list>
