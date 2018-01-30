@@ -11,7 +11,8 @@ let Card = {
             v-if="data.cardCheck === null"  
             v-model="data.cardTitle" 
             @keyup.enter="showInputOrDiv"/>
-            <p v-if="data.cardCheck === true" 
+            <p 
+            v-if="data.cardCheck === true" 
             v-text="data.cardTitle" 
             @click="showInputOrDiv">
             </p>
