@@ -26,6 +26,7 @@ let Card = {
         if (this.data.cardTitle !== '') {
           this.data.cardCheck = true
           this.$emit('dataChanged', [this.data, this.index])
+          this.$emit('hideButtonSignal', false)
         }
       }
     },
@@ -37,7 +38,12 @@ let Card = {
   created () {
     this.data = JSON.parse(JSON.stringify(this.val))
     this.checkCard = this.check
-    this.$emit('hideButtonSignal', false)
+    if (this.data.cardTitle !== '') {
+      this.$emit('hideButtonSignal', false)
+    } else {
+      this.$emit('hideButtonSignal', true)
+    }
+    console.log('Card created::::::::::')
   }
 }
 
@@ -46,7 +52,7 @@ let List = {
   data () {
     return {
       list: null,
-      addCardCheck: true
+      addCardCheck: false
     }
   },
   template: `
@@ -69,7 +75,7 @@ let List = {
       @deleteSignal="deleteCardInList"
       @hideButtonSignal="hideAddButton">
       </card>
-      <button v-if="list.listCheck === true && addCardCheck === true" 
+      <button v-if="list.listCheck === true && addCardCheck === false" 
       @click="addCardInList">+</button>
       </div>
       `,
@@ -102,8 +108,8 @@ let List = {
     },
     updateCardInList ([data, index]) {
       this.list.cards[index] = data
+      this.addCardCheck = false
       this.$emit('updatelistcards', [this.list.cards, this.listindex])
-      this.addCardCheck = true
     },
     deleteCardInList (card) {
       console.log('Delete card:::', card)
