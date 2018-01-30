@@ -144,12 +144,12 @@ new Vue({
   },
   methods: {
     addNewList () {
-      let index = this.listData.length
+      let num = uuidv4()
       let list = {
         listTitle: ``,
         cards: [],
         listCheck: null,
-        listID: index
+        listID: num
       }
       this.listData.push(list)
     },
