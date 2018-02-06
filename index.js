@@ -9,7 +9,7 @@ let Card = {
           <div class="card">
             <input type="text" placeholder="What is the list for?" 
             v-if="data.cardCheck === null"  
-            v-model="data.cardTitle" 
+            v-model="data.cardTitle"
             @keyup.enter="showInputOrDiv"/>
             <p 
             v-if="data.cardCheck === true" 
@@ -66,6 +66,7 @@ let List = {
       @click="changeInputCheck">
       </p>
       <button @click="triggerDeleteList">Delete List</button>
+      <draggable v-model="list.cards">
       <card 
       v-for="(val, index) in list.cards" 
       :val="val"
@@ -76,6 +77,7 @@ let List = {
       @deleteSignal="deleteCardInList"
       @hideButtonSignal="hideAddButton">
       </card>
+      </draggable>
       <button v-if="list.listCheck === true && addCardCheck === false" 
       @click="addCardInList">+</button>
       </div>
@@ -132,6 +134,15 @@ let List = {
   },
   created () {
     this.list = JSON.parse(JSON.stringify(this.listvalue))
+  },
+  watch: {
+    list: {
+      handler (data) {
+        console.log('List component watcher triggered:::', data)
+        this.$emit('updatelistcards', [data.cards, this.listindex])
+      },
+      deep: true
+    }
   }
 }
 
@@ -187,7 +198,7 @@ new Vue({
   watch: {
     listData: {
       handler () {
-        console.log('Watcher triggered:::')
+        console.log('Watcher triggered Vue instance:::')
         storage.save(this.listData)
       },
       deep: true
