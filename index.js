@@ -52,7 +52,12 @@ let List = {
   data () {
     return {
       list: null,
-      addCardCheck: false
+      addCardCheck: false,
+      group: {
+        group: {
+          name: 'cards'
+        }
+      }
     }
   },
   template: `
@@ -66,7 +71,7 @@ let List = {
       @click="changeInputCheck">
       </p>
       <button @click="triggerDeleteList">Delete List</button>
-      <draggable v-model="list.cards">
+      <draggable v-model="list.cards" :options="group" class="listgroup">
       <card 
       v-for="(val, index) in list.cards" 
       :val="val"
@@ -158,7 +163,12 @@ new Vue({
   data () {
     return {
       listData: storage.fetch(),
-      inputCheck: null
+      inputCheck: null,
+      group: {
+        group: {
+          name: 'list'
+        }
+      }
     }
   },
   components: {
