@@ -57,13 +57,14 @@ let List = {
         group: {
           name: 'cards'
         }
-      }
+      },
+      onelistinputcheck: false
     }
   },
   template: `
       <div class="insideList">
       <input type="text" placeholder="What is the list for?"
-      v-if="list.listCheck === null"  
+      v-if="list.listCheck === null && onelistinputcheck === true"  
       v-model="list.listTitle" 
       @keyup.enter="changeInputCheck"/>
       <p v-if="list.listCheck === true" 
@@ -104,13 +105,19 @@ let List = {
       this.$emit('updatelistcards', [this.list.cards, this.listindex])
     },
     changeInputCheck () {
-      if (this.list.listCheck) this.list.listCheck = null
-      else {
+      if (this.list.listCheck) {
+        this.list.listCheck = null
+        this.onelistinputcheck = true
+        console.log('Onclick change to input emitted:::', this.onelistinputcheck)
+        EventBus.$emit('one-list-input-active', !this.onelistinputcheck)
+      } else {
         if (this.list.listTitle !== '') {
           this.list.listCheck = true
           let temp = Object.assign({}, this.listvalue, this.list)
           this.$emit('updatelist', [temp, this.listindex])
           console.log('Change input check::::', temp, this.list, this.listvalue)
+          console.log('Onenter change to div emitted:::')
+          EventBus.$emit('one-list-input-active', !this.onelistinputcheck)
         }
       }
     },
@@ -139,6 +146,16 @@ let List = {
   },
   created () {
     this.list = JSON.parse(JSON.stringify(this.listvalue))
+    if (this.list.listCheck === null) {
+      this.onelistinputcheck = true
+    }
+    console.log(this.onelistinputcheck, this.list.listCheck)
+  },
+  mounted () {
+    EventBus.$on('one-list-input-active', data => {
+      console.log('On mount, event one-list-input-active:::::')
+      this.onelistinputcheck = data
+    })
   },
   watch: {
     list: {
@@ -158,6 +175,7 @@ const storage = {
   }
 }
 
+const EventBus = new Vue()
 new Vue({
   el: '#app',
   data () {
