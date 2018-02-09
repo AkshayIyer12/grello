@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Welcome to Vue</title>
+  <title>Grello</title>
   <script src="https://unpkg.com/vue"></script>
   <script src="http://wzrd.in/standalone/uuid%2Fv4@latest"></script>
   <script src="//cdn.jsdelivr.net/npm/sortablejs@1.7.0/Sortable.min.js"></script>
@@ -40,8 +40,10 @@
         <list class="children" v-for="(value, key) in listData" 
         :listvalue="value"
         :listindex="key"
+        :itemediting="itemEditing"
         :group="group"
         :key="value.listID"
+        @setitem="setItem"
         @updatelistcards="updateListCards"
         @updatelist="updateList"
         @deletelist="deleteList">
