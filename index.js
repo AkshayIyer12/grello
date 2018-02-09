@@ -7,15 +7,18 @@ let Card = {
   },
   template: `
           <div class="card">
+
             <input type="text" placeholder="What is the list for?" 
             v-if="data.cardCheck === null"  
             v-model="data.cardTitle"
             @keyup.enter="showInputOrDiv"/>
+          
             <p 
             v-if="data.cardCheck === true" 
             v-text="data.cardTitle" 
             @click="showInputOrDiv">
             </p>
+          
             <button v-if="data.cardCheck === true" @click="deleteCard">Delete Card</button>
           </div>`,
   methods: {
@@ -48,7 +51,7 @@ let Card = {
 }
 
 let List = {
-  props: ['listvalue', 'listindex'],
+  props: ['listvalue', 'listindex', 'itemediting'],
   data () {
     return {
       list: null,
@@ -57,22 +60,26 @@ let List = {
         group: {
           name: 'cards'
         }
-      },
-      onelistinputcheck: false
+      }
     }
   },
   template: `
       <div class="insideList">
-      <input type="text" placeholder="What is the list for?"
-      v-if="list.listCheck === null && onelistinputcheck === true"  
-      v-model="list.listTitle" 
-      @keyup.enter="changeInputCheck"/>
-      <p v-if="list.listCheck === true" 
+      
+      <p v-if="list.listCheck === true && list.listID !== itemediting" 
       v-text="list.listTitle" 
       @click="changeInputCheck">
       </p>
+
+      <input type="text" placeholder="What is the list for?"      
+      v-if="list.listCheck === null"  
+      v-model="list.listTitle"
+      @keyup.enter="changeInputCheck"/>
+      
       <button @click="triggerDeleteList">Delete List</button>
+      
       <draggable v-model="list.cards" :options="group" class="listgroup">
+      
       <card 
       v-for="(val, index) in list.cards" 
       :val="val"
@@ -83,9 +90,12 @@ let List = {
       @deleteSignal="deleteCardInList"
       @hideButtonSignal="hideAddButton">
       </card>
+      
       </draggable>
+      
       <button v-if="list.listCheck === true && addCardCheck === false" 
       @click="addCardInList">+</button>
+      
       </div>
       `,
   components: {
@@ -107,17 +117,14 @@ let List = {
     changeInputCheck () {
       if (this.list.listCheck) {
         this.list.listCheck = null
-        this.onelistinputcheck = true
-        console.log('Onclick change to input emitted:::', this.onelistinputcheck)
-        EventBus.$emit('one-list-input-active', !this.onelistinputcheck)
+        this.$emit('setitem', this.list.listID)
       } else {
         if (this.list.listTitle !== '') {
           this.list.listCheck = true
           let temp = Object.assign({}, this.listvalue, this.list)
           this.$emit('updatelist', [temp, this.listindex])
           console.log('Change input check::::', temp, this.list, this.listvalue)
-          console.log('Onenter change to div emitted:::')
-          EventBus.$emit('one-list-input-active', !this.onelistinputcheck)
+          this.$emit('setitem', null)
         }
       }
     },
@@ -146,16 +153,6 @@ let List = {
   },
   created () {
     this.list = JSON.parse(JSON.stringify(this.listvalue))
-    if (this.list.listCheck === null) {
-      this.onelistinputcheck = true
-    }
-    console.log(this.onelistinputcheck, this.list.listCheck)
-  },
-  mounted () {
-    EventBus.$on('one-list-input-active', data => {
-      console.log('On mount, event one-list-input-active:::::')
-      this.onelistinputcheck = data
-    })
   },
   watch: {
     list: {
@@ -175,7 +172,6 @@ const storage = {
   }
 }
 
-const EventBus = new Vue()
 new Vue({
   el: '#app',
   data () {
@@ -186,7 +182,8 @@ new Vue({
         group: {
           name: 'list'
         }
-      }
+      },
+      itemEditing: null
     }
   },
   components: {
@@ -221,6 +218,9 @@ new Vue({
         }
       })
       storage.save(this.listData)
+    },
+    setItem (data) {
+      this.itemEditing = data
     }
   },
   watch: {
