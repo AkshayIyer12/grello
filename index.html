@@ -40,10 +40,8 @@
         <list class="children" v-for="(value, key) in listData" 
         :listvalue="value"
         :listindex="key"
-        :itemediting="itemEditing"
         :group="group"
         :key="value.listID"
-        @setitem="setItem"
         @updatelistcards="updateListCards"
         @updatelist="updateList"
         @deletelist="deleteList">

@@ -66,7 +66,7 @@ let List = {
   template: `
       <div class="insideList">
       
-      <p v-if="list.listCheck === true && list.listID !== itemediting" 
+      <p v-if="list.listCheck === true" 
       v-text="list.listTitle" 
       @click="changeInputCheck">
       </p>
@@ -117,14 +117,14 @@ let List = {
     changeInputCheck () {
       if (this.list.listCheck) {
         this.list.listCheck = null
-        this.$emit('setitem', this.list.listID)
+      //  this.$emit('setitem', this.list.listID)
       } else {
         if (this.list.listTitle !== '') {
           this.list.listCheck = true
           let temp = Object.assign({}, this.listvalue, this.list)
           this.$emit('updatelist', [temp, this.listindex])
           console.log('Change input check::::', temp, this.list, this.listvalue)
-          this.$emit('setitem', null)
+        //  this.$emit('setitem', null)
         }
       }
     },
@@ -135,12 +135,12 @@ let List = {
     },
     deleteCardInList (card) {
       console.log('Delete card:::', card)
-      this.list.cards = this.list.cards.filter(v => {
-        console.log('Inside filter', v, card)
-        if (v.cardID !== card.cardID) {
-          return v
-        }
-      })
+      this.list.cards = this.list.cards.filter(v => v.cardID !== card.cardID ? v : null)
+      //   console.log('Inside filter', v, card)
+      //   if (v.cardID !== card.cardID) {
+      //     return v
+      //   }
+      // })
       this.$emit('updatelistcards', [this.list.cards, this.listindex])
     },
     hideAddButton (value) {
@@ -167,9 +167,7 @@ let List = {
 
 const storage = {
   fetch: () => JSON.parse(localStorage.getItem('lists') || '[]'),
-  save: function (listData) {
-    localStorage.setItem('lists', JSON.stringify(listData))
-  }
+  save: listData => localStorage.setItem('lists', JSON.stringify(listData))
 }
 
 new Vue({
@@ -182,8 +180,7 @@ new Vue({
         group: {
           name: 'list'
         }
-      },
-      itemEditing: null
+      }
     }
   },
   components: {
@@ -218,9 +215,6 @@ new Vue({
         }
       })
       storage.save(this.listData)
-    },
-    setItem (data) {
-      this.itemEditing = data
     }
   },
   watch: {
