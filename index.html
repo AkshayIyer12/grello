@@ -1,56 +1,19 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Grello</title>
-  <script src="https://unpkg.com/vue"></script>
-  <script src="http://wzrd.in/standalone/uuid%2Fv4@latest"></script>
-  <script src="//cdn.jsdelivr.net/npm/sortablejs@1.7.0/Sortable.min.js"></script>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/Vue.Draggable/2.16.0/vuedraggable.min.js"></script>
-  <style>
-    .insideList {
-      padding: 10px 20px;
-      border: solid 2px;
-      margin: 0 20px 20px 20px;
-      width: 12%;
-      height: 100%;
-    }
-    .allLists {
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-start;
-      align-items: center;
-      margin-top: 41px;
-    }
-    .children {
-      align-self: flex-start;
-    }
-    #listbutton {
-      height: 5%;
-      align-self: flex-start;
-    }
-    .listgroup {
-      min-height: 20px;
-    }
-  </style>
-</head>
-<body>
-  <div id="app">
-    <!-- <div class="allLists">   -->
-      <draggable v-model="listData" class="allLists" :options="group">
-        <list class="children" v-for="(value, key) in listData" 
-        :listvalue="value"
-        :listindex="key"
-        :group="group"
-        :key="value.listID"
-        @updatelistcards="updateListCards"
-        @updatelist="updateList"
-        @deletelist="deleteList">
-        </list>
-        <button id="listbutton" @click="addNewList">+</button>
-      </draggable>
-     
-    <!-- </div>  -->
-  </div>
-<script type="text/javascript" src="index.js"></script>
-</body>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <script defer src="https://use.fontawesome.com/releases/v5.0.6/js/all.js"></script>
+    <title>grello</title>
+    <style>
+      html {
+        background-color: #0079bf;
+        font-size: small;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- built files will be auto injected -->
+  </body>
 </html>
